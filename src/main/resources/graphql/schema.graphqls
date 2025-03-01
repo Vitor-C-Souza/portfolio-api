@@ -1,0 +1,15 @@
+type EmailMessage {
+    id: String
+    name: String
+    email: String
+    subject: String
+    message: String
+}
+
+type Query {
+    messages: [EmailMessage]
+}
+
+type Mutation {
+    sendMessage(name: String!, email: String!, subject: String, message: String!): EmailMessage
+}
