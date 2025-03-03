@@ -46,14 +46,34 @@ public class EmailMessageService {
     private void sendEmail(EmailMessage message) {
         try {
             logger.info("Enviando e-mail para: {}", message.getEmail());
-            SimpleMailMessage toMe = new SimpleMailMessage();
+            var toMe = new SimpleMailMessage();
             toMe.setFrom(message.getEmail());
             toMe.setTo("vitorcavalcantesouza14@gmail.com");
             toMe.setSubject("Mensagem do Portfólio de " + ((message.getSubject() == null) ? message.getName() : message.getSubject()));
-            toMe.setText("De: " + message.getEmail() + "\n\n" + message.getMessage());
+            toMe.setText("De: " + message.getName() + "\nFrom: " + message.getEmail() + "\n\nMessage: " + message.getMessage());
 
             mailSender.send(toMe);
             logger.info("E-mail enviado com sucesso de: {}", message.getEmail());
+
+            var toBack = new SimpleMailMessage();
+            toBack.setFrom("vitorcavalcantesouza14@gmail.com");
+            toBack.setTo(message.getEmail());
+            toBack.setSubject("Recebemos sua mensagem!");
+            String messageReturn = String.format("""             
+                    Olá, %s!
+                    
+                    Agradeço por entrar em contato através do meu portfólio.
+                    Recebi sua mensagem e em breve retornarei com uma resposta.
+                    
+                    Caso queira falar comigo diretamente, sinta-se à vontade para me chamar no WhatsApp pelo botão disponível no site.
+                    
+                    Até logo!
+                    
+                    Atenciosamente,
+                    Vítor Cavalcante Souza
+                    """, message.getName());
+            toBack.setText(messageReturn);
+            mailSender.send(toBack);
         } catch (Exception e) {
             logger.error("Erro ao enviar e-mail de: {} - Erro: {}", message.getEmail(), e.getMessage(), e);
         }
